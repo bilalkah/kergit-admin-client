@@ -1,0 +1,37 @@
+services:
+  admin-node:
+    image: admin-node
+    container_name: admin-node
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /app/clients/admin
+    env_file:
+      - ../../../.env
+    ports:
+      - "127.0.0.1:3001:3001"
+    networks:
+      default:
+      kergit_default:
+        aliases:
+          - admin-node
+    environment:
+      NUXT_HOST: 0.0.0.0
+      NUXT_PORT: "3001"
+      NUXT_ADMIN_APP_BASE_URL: ${NUXT_ADMIN_APP_BASE_URL:-/admin/}
+      NUXT_PUBLIC_ADMIN_METRICS_BASE: ${NUXT_PUBLIC_ADMIN_METRICS_BASE:-/admin-api}
+      NUXT_PUBLIC_ADMIN_LIVEKIT_METRICS_BASE: ${NUXT_PUBLIC_ADMIN_LIVEKIT_METRICS_BASE:-/admin-livekit-metrics}
+    volumes:
+      - ../../..:/app
+    command:
+      - bash
+      - -lc
+      - |
+        set -euo pipefail
+        cd /app/clients/admin
+        pnpm install --frozen-lockfile --reporter=append-only
+        pnpm dev --host 0.0.0.0 --port 3001
+
+networks:
+  kergit_default:
+    external: true
