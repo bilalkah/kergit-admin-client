@@ -23,6 +23,8 @@ services:
       NUXT_PUBLIC_ADMIN_LIVEKIT_METRICS_BASE: ${NUXT_PUBLIC_ADMIN_LIVEKIT_METRICS_BASE:-/admin-livekit-metrics}
     volumes:
       - ../../..:/app
+    # Auto-recover on crash/OOM or host/daemon restart (main process is the admin app).
+    restart: unless-stopped
     command:
       - bash
       - -lc
